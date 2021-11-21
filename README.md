@@ -78,7 +78,7 @@ If it does not work, here are some options:
 1. Check the filenames, spelling-wise and sensitive-case-wise.
 2. Check the directory you are working in.
 3. Check if you have all the Python packages installed.
-4. Contact me, with a detailed description of the error, and which part of the procedure above you are stuck in. I'll try my best to replicate the error and to help.
+4. Contact me (last resort), with a detailed description of the error, and which part of the procedure above you are stuck in. I'll try my best to replicate the error and to help.
 
 ## Other Things To Do
 - [x] Complete the restructured model.

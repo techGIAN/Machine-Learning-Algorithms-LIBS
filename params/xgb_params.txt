@@ -1,0 +1,7 @@
+'eta': [i*0.1 for i in range(11)]
+'gamma': list(range(0, 11))
+'max_depth': list(range(1,7))
+'subsample': [i*0.1 for i in range(5,11)]
+'lambda': [i*0.1 for i in range(11)]
+'alpha': [i*0.1 for i in range(11)]
+'predictor': ['auto', 'cpu_predictor']

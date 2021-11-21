@@ -1,0 +1,6 @@
+'kernel': ['rbf', 'poly', 'sigmoid']
+'degree': [2,3,4,5]
+'gamma': ['scale', 'auto']
+'coef0': list(np.arange(0.0, 1.1, 0.2))
+'C': [0.5, 1.0, 2.0]
+'epsilon': list(np.arange(0.1, 1.1, 0.1))

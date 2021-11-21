@@ -1,6 +1,23 @@
 # Spectroscopy
 Machine Learning Project where we compare models and construct ensembles using Spectroscopic datasets
 
+## Abstract
+[To be filled...]
+
+If something does not work, read the section below.
+
+## Basic Requirements
+Here are some basic requirements you need to have to run this:
+1. Python (not sure if 2 will work but I recommend 3; I used 3.8)
+2. Pandas (for handling data and dataframes)
+3. Numpy (for mathematical and numerical operations)
+4. Matplotlib (for plotting)
+5. Scikitlearn (for machine learning models)
+6. Keras (for neural networks)
+7. Tensorflow (for computational speedup of NN models)
+8. Most other packages are built-in with Python and simple imports are possible
+9. ...
+
 ## Usage
 First, navigate to the directory ```dataset```, where it contains a textfile describing where to download the dataset. And then navigate to the directory ```code```, and run (without 'user:~$'):
 ```console
@@ -8,7 +25,7 @@ user:~$ python3 preprocess.py --dataset [path_to_dataset] --seed [seed]
 ```
 where ```path_to_dataset``` is the path to where you saved the downloaded dataset (preferably saved in the ```dataset``` directory), and ```seed``` is the seed value (```123``` by default). This creates a directory of datasets in ```datasets``` directory, which are the datasets we get from Step 1 after it has been partitioned to training, testing, etc. <br>
 
-Next, run the models for each of the machine learning algorithms and each of the element. <i>(See more details at the end).</i> <br>
+Next, run the models for each of the machine learning algorithms and each of the element. <i>(See more details below).</i> <br>
 
 Now navigate to the directory ```code```, and run
 ```console
@@ -56,4 +73,18 @@ user:~$ python3 compile.py --out [N] --element [E]
 ```
 where ```E``` is the element and ```N``` is the ```N``` value obtained earlier. This consolidates the CNN results into a single file, whose output is also going to be generated in the ```results/cnn/```. Note that this compilation cannot be done unless all five CNN runs are consecutively successful.
 
+## It Does Not Work...
+If it does not work, here are some options:
+1. Check the filenames, spelling-wise and sensitive-case-wise.
+2. Check the directory you are working in.
+3. Check if you have all the Python packages installed.
+4. Contact me, with a detailed description of the error, and which part of the procedure above you are stuck in. I'll try my best to replicate the error and to help.
 
+## Other Things To Do
+- [x] Complete the restructured model.
+- [ ] Test on SiO2 on another computer (note it has only been tested on SiO2 on my computer)
+- [ ] Test on all other 7 elements on both computers.
+- [ ] Plot ternary plots
+- [ ] Plot actual-vs-observed
+- [ ] Runtime analysis
+- [ ] ...

@@ -58,3 +58,13 @@ for i in range(5,8):
     partitioned_data[i].to_csv(path_list[i-4] + kind[i-5] + '.csv', index=False)
 
 print('Data preprocess complete.')
+
+non_ensemble = pd.concat([partitioned_data[0],
+            partitioned_data[1],
+            partitioned_data[2],
+            partitioned_data[3],
+            partitioned_data[4],
+            partitioned_data[5],
+            partitioned_data[6]])
+
+non_ensemble.to_csv('../dataset/without_ensemble/non_ensemble.csv', index=False)

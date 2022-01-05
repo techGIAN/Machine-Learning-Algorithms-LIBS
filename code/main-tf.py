@@ -204,7 +204,7 @@ target_idx = N_predictors + ele
 
 if model == 'ann':
 
-    ann_reg = NNModel(seed=seed, model='ann')
+    ann_reg = NNModel(seed=seed, model='ann', element=ele)
     ann_params = param_dict
 
     opt_dict, opt_rmsec, ann_models, rmsecs, rmsecvs, parameter_dictionaries = ann_reg.nn_train(df_tuple, df_val, (1,6145), target_idx, ann_params, 'ann', dim_reduce=0)
@@ -284,8 +284,7 @@ if model == 'ann':
 # =============================== CNN ===============================
 
 elif model == 'cnn':
-    seeds = [54, 111, 100, 404, 18]
-    cnn_reg = NNModel(seed=seeds[mod_id-1], model='cnn')
+    cnn_reg = NNModel(seed=mod_id-1, model='cnn', element=ele)
     cnn_params = param_dict
 
     opt_dict, opt_rmsec, cnn_models, rmsecs, rmsecvs, parameter_dictionaries = cnn_reg.nn_train(df_tuple, df_val, (1,6145), target_idx, cnn_params, 'cnn', dim_reduce=0)

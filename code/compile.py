@@ -66,9 +66,11 @@ filenames = []
 param_files = []
 
 for i in range(1,6):
-    fname = 'out0' + str(int(out_start)+i-1) + '_element=' + element + '_model=cnn_mod_id=' + str(i) + '.txt'
+    out_id = str(int(out_start)+i-1)
+    out_id = '0'*(3-len(out_id)) + out_id
+    fname = 'out' + out_id + '_element=' + element + '_model=cnn_mod_id=' + str(i) + '.txt'
     filenames.append(cnn_dir + fname)
-    p_name = 'out0' + str(int(out_start)+i-1) + '_element=' + element + '_out_params=cnn_mod_id=' + str(i) + '.txt'
+    p_name = 'out' + out_id + '_element=' + element + '_out_params=cnn_mod_id=' + str(i) + '.txt'
     param_files.append(p_name)
 
 rmsecs = []
@@ -109,8 +111,9 @@ opt_model_file = filenames[opt]
 opt_param_file = cnn_dir + param_files[opt]
 
 os5 = str(int(out_start) + 5)
-new_model_file = cnn_dir + 'out0' + os5 + '_element=' + element + '_model=cnn.txt'
-new_param_file = cnn_dir + 'out0' + os5 + '_element=' + element + '_out_params=cnn.txt'
+os5 = '0'*(3-len(os5)) + os5
+new_model_file = cnn_dir + 'out' + os5 + '_element=' + element + '_model=cnn.txt'
+new_param_file = cnn_dir + 'out' + os5 + '_element=' + element + '_out_params=cnn.txt'
 
 shutil.copy(opt_model_file, new_model_file)
 shutil.copy(opt_param_file, new_param_file)

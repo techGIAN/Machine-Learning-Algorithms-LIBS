@@ -44,7 +44,6 @@ class LRMModel:
             parameter_tuples = range(1)
         
 
-        # remove all unnecessary columns
         predictor_tuple = tuple()
         target_tuple = tuple()
         for frame in df_tuple:
@@ -57,7 +56,6 @@ class LRMModel:
         df_v_x = df_val.iloc[:,predictor_idx[0]:predictor_idx[1]]
         df_v_y = df_val.iloc[:,target_idx]
         
-        # 5 folds
         nums = range(5)
         train_rmsecs = []
         rmsecs = []
@@ -68,95 +66,82 @@ class LRMModel:
         best_rmsec = np.inf
 
         num_iter = 0
-        # max_runs = len(params['kernel'])
 
-        # while num_iter < max_runs:
         dim_reduced_instances = []
 
         parameter_dictionaries = []
-        # for kern in params['kernel']:
+
         m_id = 0
 
         for param_tup in parameter_tuples:
 
-            # try:
-            rmsec = []
+            try:
+                rmsec = []
 
-            if self.regularization != 'linreg':
-                params_dict = dict(zip(param_names, param_tup))
+                if self.regularization != 'linreg':
+                    params_dict = dict(zip(param_names, param_tup))
 
-            if self.regularization == 'lasso':
-                lrm_model = lm.Lasso()
-            elif self.regularization == 'ridge':
-                # params_dict['solver'] = 'svd'
-                lrm_model = lm.Ridge()
-            elif self.regularization == 'enets':
-                lrm_model = lm.ElasticNet()
-            else:
-                lrm_model = lm.LinearRegression(fit_intercept=True)
+                if self.regularization == 'lasso':
+                    lrm_model = lm.Lasso()
+                elif self.regularization == 'ridge':
+                    params_dict['solver'] = 'svd'
+                    lrm_model = lm.Ridge()
+                elif self.regularization == 'enets':
+                    lrm_model = lm.ElasticNet()
+                else:
+                    lrm_model = lm.LinearRegression(fit_intercept=True)
+                
+                if self.regularization != 'linreg':
+                    lrm_model.set_params(**params_dict)
+                
+
+                for i in nums:
+
+                    norm = Normalizer('mean-centering')
+
+                    test_x_frame = predictor_tuple[i].reset_index().drop(['index'], axis=1)
+                    test_y_frame = target_tuple[i].reset_index().drop(['index'], axis=1)
+
+                    train_nums = [i for n in nums if i != n]
+                    trainers_x = [predictor_tuple[tn] for tn in train_nums]
+                    trainers_y = [target_tuple[tn] for tn in train_nums]
+                    train_x_frame = trainers_x[0].append([trainers_x[1], trainers_x[2], trainers_x[3]], ignore_index=True)
+                    train_y_frame = trainers_y[0].append([trainers_y[1], trainers_y[2], trainers_y[3]], ignore_index=True)
+
+                    norm_train = norm.normalize(train_x_frame, [0,target_idx-1])
+                    norm_test = norm.normalize(test_x_frame, [0,target_idx-1])
+
+
+                    train_y_frame = train_y_frame.to_numpy()
+                    train_y_frame = train_y_frame.reshape((train_y_frame.shape[0],))
+                    lrm_model.fit(norm_train, train_y_frame)
+                    lrm_pred = lrm_model.predict(norm_test)
+
+                    rmsec_val = np.sqrt(mean_squared_error(test_y_frame, lrm_pred))
+                    train_rmsecs.append(rmsec_val)
+
+                rmsec = round(np.mean(train_rmsecs), 4)
+                rmsecs.append(rmsec)
+
+                rmsecv = round(np.sqrt(mean_squared_error(df_v_y, lrm_model.predict(df_v_x))), 4)
+                rmsecvs.append(rmsecv)
+
             
-            if self.regularization != 'linreg':
-                # params_dict['max_iter'] = 10000
-                # params_dict['tol'] = 1e-2
-                lrm_model.set_params(**params_dict)
-            
-
-            for i in nums:
-
-                norm = Normalizer('mean-centering')
-
-                test_x_frame = predictor_tuple[i].reset_index().drop(['index'], axis=1)
-                test_y_frame = target_tuple[i].reset_index().drop(['index'], axis=1)
-
-                train_nums = [i for n in nums if i != n]
-                trainers_x = [predictor_tuple[tn] for tn in train_nums]
-                trainers_y = [target_tuple[tn] for tn in train_nums]
-                train_x_frame = trainers_x[0].append([trainers_x[1], trainers_x[2], trainers_x[3]], ignore_index=True)
-                train_y_frame = trainers_y[0].append([trainers_y[1], trainers_y[2], trainers_y[3]], ignore_index=True)
-
-
-                # normalize
-                norm_train = norm.normalize(train_x_frame, [0,target_idx-1])
-                norm_test = norm.normalize(test_x_frame, [0,target_idx-1])
-
-
-                # fit and predict
-                train_y_frame = train_y_frame.to_numpy()
-                train_y_frame = train_y_frame.reshape((train_y_frame.shape[0],))
-                lrm_model.fit(norm_train, train_y_frame)
-                # print('R2 score: ' + str(lrm_model.score(norm_train, train_y_frame)))
-                lrm_pred = lrm_model.predict(norm_test)
-
-
-                # compute rmsec
-                rmsec_val = np.sqrt(mean_squared_error(test_y_frame, lrm_pred))
-                train_rmsecs.append(rmsec_val)
-                # print('Iter ' + str(i) + ' done')
-
-            rmsec = round(np.mean(train_rmsecs), 4)
-            rmsecs.append(rmsec)
-
-            rmsecv = round(np.sqrt(mean_squared_error(df_v_y, lrm_model.predict(df_v_x))), 4)
-            rmsecvs.append(rmsecv)
-
+                lrm_models.append(lrm_model)
+                
+                if self.regularization != 'linreg':
+                    params_dict['model_id'] = m_id
+                    m_id += 1
+                    parameter_dictionaries.append(params_dict)
+                    print('Model ' + str(m_id) + ' done')
+                
+                num_iter += 1
+                t_prime = dt.now()
+                print('Training param set ' + str(num_iter) + ' complete: ' + str(t_prime))
+                
+            except:
+                continue
         
-            lrm_models.append(lrm_model)
-            
-            if self.regularization != 'linreg':
-                params_dict['model_id'] = m_id
-                m_id += 1
-                parameter_dictionaries.append(params_dict)
-                print('Model ' + str(m_id) + ' done')
-            
-            num_iter += 1
-            t_prime = dt.now()
-            print('Training param set ' + str(num_iter) + ' complete: ' + str(t_prime))
-            
-            # # except:
-            #     print('Some error found')
-            #     continue
-        
-        # find the smallest rmsec
         model_opt = ModelOptimizer()
 
         if self.regularization != 'linreg':

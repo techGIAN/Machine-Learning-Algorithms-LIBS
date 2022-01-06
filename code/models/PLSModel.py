@@ -29,7 +29,6 @@ class PLSModel:
         
         norm = Normalizer('mean-centering')
 
-        # remove all unnecessary columns
         predictor_tuple = tuple()
         target_tuple = tuple()
         for frame in df_tuple:
@@ -43,7 +42,6 @@ class PLSModel:
         df_v_y = df_val.iloc[:,target_idx]
         n_comp = np.arange(2, min(max(component_bound), predictor_frame.shape[1])+1)
         
-        # 5 folds
         nums = range(5)
         train_rmsecs = []
         rmsecs = []
@@ -72,15 +70,12 @@ class PLSModel:
                 train_x_frame = trainers_x[0].append([trainers_x[1], trainers_x[2], trainers_x[3]], ignore_index=True)
                 train_y_frame = trainers_y[0].append([trainers_y[1], trainers_y[2], trainers_y[3]], ignore_index=True)
 
-                # normalize
                 norm_train = norm.normalize(train_x_frame, [0,target_idx-1])
                 norm_test = norm.normalize(test_x_frame, [0,target_idx-1])
 
-                # fit and predict
                 pls_model.fit(norm_train, train_y_frame)
                 pls_pred = pls_model.predict(norm_test)
 
-                # compute rmsec
                 rmsec_val = np.sqrt(mean_squared_error(test_y_frame, pls_pred))
                 train_rmsecs.append(rmsec_val)
 
@@ -127,47 +122,3 @@ class PLSModel:
             self.test_plot(test_set_y, pls_pred)
 
         return rmsets
-
-    def test_plot(self, actual_y, predicted_y):
-        '''
-            Plot the Actual vs Predicted Y (only for the validation or testing plot)
-        '''
-        actual_values = [x[0] for x in actual_y.values.tolist()]
-        predicted_values = [x[0] for x in predicted_y]
-        min_actual_y = min(actual_values)
-        max_actual_y = max(actual_values) + 1
-        
-        x_label = 'Observed SiO2'
-        y_label = 'Predicted SiO2'
-        title = 'Validation for PLS SiO2'
-
-        # Plot y = x
-        x_range = np.arange(min_actual_y, max_actual_y)
-        y_range = x_range
-        plt.plot(x_range, y_range, color='k', linestyle='-')
-
-        # scatter plot of the points
-        plt.scatter(actual_y, predicted_y, s=5)
-        plt.xlabel(x_label)
-        plt.ylabel(y_label)
-        plt.title(title)
-
-        # if save_plot:
-        f_name = self.get_plot_filename()
-        plt.savefig(f_name)
-
-        # plt.show()
-    
-    def get_plot_filename(self):
-        '''
-            Gets the filename of the plot
-        '''
-        out_dir = './outputs'
-        files = [f for f in listdir(out_dir) if isfile(join(out_dir, f))]
-        files = [f[:-4] for f in files if f[0:3] == 'out']
-        nums = [int(f[3:]) for f in files]
-        max_num = max(nums)+1
-        max_num = str(max_num) if max_num >= 10 else '0' + str(max_num)
-        f_out = './outputs/out' + max_num + '.png'
-
-        return f_out

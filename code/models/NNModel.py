@@ -1,11 +1,9 @@
 # imports
 import pandas as pd
 import numpy as np
-# import matplotlib.pyplot as plt
 import random as rnd
 from datetime import datetime as dt
 
-# from sklearn.metrics import mean_squared_error
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
@@ -17,11 +15,6 @@ import tensorflow as tf
 
 from utilities.Normalizer import Normalizer
 from utilities.ModelOptimizer import ModelOptimizer
-# from DimensionReducer import DimensionReducer
-# from sklearn.decomposition import KernelPCA
-
-# import xgboost as xgb
-
 
 import itertools
 import warnings
@@ -30,11 +23,17 @@ class NNModel:
 
     seed = 123
     
-    def __init__(self, seed=123, model='ann'):
+    def __init__(self, seed=123, model='ann', element=0):
         '''
             Initializes the SVRModel Instance
         '''
-        self.seed = seed if model == 'cnn' else 1001
+        seed_set = [54, 111, 100, 404, 18]
+        special_seed_set = [555, 111, 100, 404, 18]
+        if element < 6:
+            self.seed = seed_set[seed] if model == 'cnn' else 1001
+        else:
+            self.seed = 1000 if model == 'ann' else special_seed_set[seed]
+
 
     def nn_param_combos(self, param_dict, N=np.inf):
         '''
@@ -91,7 +90,6 @@ class NNModel:
             pc['model_id'] = counter
             counter += 1
         
-        # print('Got the parameters')
         return param_combos
 
 
@@ -99,13 +97,12 @@ class NNModel:
 
         N = 5 if mdl == 'ann' else 1
         parameter_combos = self.nn_param_combos(params, N=N)
-        print(parameter_combos)
-        
+       
         # remove all unnecessary columns
         predictor_tuple = tuple()
         target_tuple = tuple()
         for frame in df_tuple:
-            predictor_frame = frame.iloc[:,1:target_idx]
+            predictor_frame = frame.iloc[:,predictor_idx[0]:predictor_idx[1]]
             predictor_tuple += (predictor_frame,)
 
             target_frame = frame.iloc[:,target_idx]
@@ -117,29 +114,18 @@ class NNModel:
         df_v_y = df_v_y.to_numpy()
         df_v_x = df_v_x.to_numpy()
         
-        # 5 folds
         nums = range(5)
         train_rmsecs = []
         rmsecs = []
         rmsecvs = []
         nn_models = []
 
-        
-
         num_iter = 0
 
         parameter_dictionaries = []
-        # for kern in params['kernel']:
         m_id = 0
 
         for param_set in parameter_combos:
-
-            # dict_string = '{'
-            # for k, v in param_set.items():
-            #     dict_string += k + ': ' + str(v) + ', '
-            # dict_string += '}'
-            # dict_string = dict_string.replace(', }', '}')
-            # print(dict_string)
 
             rmsec = []
 
@@ -149,45 +135,11 @@ class NNModel:
             act_func = {'relu': tf.keras.layers.ReLU(),
                         'softmax': tf.keras.layers.Softmax(),
                         'leaky_relu': tf.keras.layers.LeakyReLU()}
-
-            # ann_model = Sequential()
-            # in_dim = 6144
-            # if temp_param_set['with_conv']:
-            #     ann_model.add(Conv1D(filters=temp_param_set['filters'], kernel_size=2, padding='valid',
-            #                         activation=act_func[temp_param_set['activation']], input_shape=(in_dim,1)))
-            #     ann_model.add(MaxPooling1D(pool_size=2))
-            #     ann_model.add(Flatten())
-            # for n_hidden_units in temp_param_set['hidden_units']:
-            #     if not temp_param_set['with_conv']:
-            #         ann_model.add(Dense(n_hidden_units, input_dim=in_dim, activation=act_func[temp_param_set['activation']]))
-            #     else:
-            #         ann_model.add(Dense(n_hidden_units, activation=act_func[temp_param_set['activation']]))
-            #     in_dim = n_hidden_units
-            #     ann_model.add(Dropout(temp_param_set['dropout']))
-            # ann_model.add(Dense(1, activation=act_func[temp_param_set['activation']]))
-
-            # optimizer = None
-            # if temp_param_set['optimizer'] == 'rmsprop':
-            #     optimizer = tf.keras.optimizers.RMSprop(learning_rate=temp_param_set['learning_rate'],
-            #                                             epsilon=temp_param_set['epsilon'])
-            # elif temp_param_set['optimizer'] == 'adam':
-            #     optimizer = tf.keras.optimizers.Adam(learning_rate=temp_param_set['learning_rate'],
-            #                                             epsilon=temp_param_set['epsilon'],
-            #                                             beta_1=temp_param_set['beta_1'],
-            #                                             beta_2=temp_param_set['beta_2'],
-            #                                             amsgrad=temp_param_set['amsgrad'])
-            # else:
-            #     optimizer = tf.keras.optimizers.SGD(learning_rate=temp_param_set['learning_rate'],
-            #                                             momentum=temp_param_set['momentum'],
-            #                                             nesterov=temp_param_set['nesterov'])
-
-            # ann_model.compile(loss='mean_squared_error', optimizer=optimizer)
-            
+ 
 
             for i in nums:
 
                 norm = Normalizer('mean-centering')
-                # dr = DimensionReducer(n_comp=dim_reduce)
 
                 test_x_frame = predictor_tuple[i].reset_index().drop(['index'], axis=1)
                 test_y_frame = target_tuple[i].reset_index().drop(['index'], axis=1)
@@ -199,7 +151,6 @@ class NNModel:
                 train_y_frame = trainers_y[0].append([trainers_y[1], trainers_y[2], trainers_y[3]], ignore_index=True)
 
 
-                # normalize
                 norm_train = norm.normalize(train_x_frame, [0,target_idx-1])
                 norm_test = norm.normalize(test_x_frame, [0,target_idx-1])
 
@@ -210,7 +161,6 @@ class NNModel:
                                         activation=act_func[temp_param_set['activation']], input_shape=(norm_train.shape[1],1)))
                     nn_model.add(MaxPooling1D(pool_size=2))
                     nn_model.add(Flatten())
-                    # in_dim = norm_train.shape[1]
                 for n_hidden_units in temp_param_set['hidden_units']:
                     if not temp_param_set['with_conv']:
                         nn_model.add(Dense(n_hidden_units, input_dim=in_dim, activation=act_func[temp_param_set['activation']]))
@@ -238,7 +188,6 @@ class NNModel:
                 nn_model.compile(loss='mean_squared_error', optimizer=optimizer)
 
 
-                # dimensionally reduce if needed
                 if dim_reduce > 0 and False:
                     dim_reduced_instance, reduced_train = dr.dim_reduce_train(norm_train, [0, target_idx-1], kern)
                     reduced_test = dr.dim_reduce_test(norm_test, [0,target_idx-1], dim_reduced_instance)
@@ -247,7 +196,6 @@ class NNModel:
                     dim_reduced_instances.append(dim_reduced_instance)
 
 
-                # fit and predict
                 train_y_frame = train_y_frame.to_numpy()
                 train_y_frame = train_y_frame.reshape((train_y_frame.shape[0],))
                 test_y_frame = test_y_frame.to_numpy()
@@ -269,10 +217,8 @@ class NNModel:
                     ann_score = nn_model.evaluate(norm_test, test_y_frame, batch_size=128)
 
 
-                # compute rmsec
                 rmsec_val = np.sqrt(ann_score)
                 train_rmsecs.append(rmsec_val)
-                # print('Iter ' + str(i) + ' done')
 
             rmsec = round(np.mean(train_rmsecs), 4)
             rmsecs.append(rmsec)

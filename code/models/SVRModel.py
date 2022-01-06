@@ -39,11 +39,9 @@ class SVRModel:
         parameter_tuples = [tup for tup in parameter_tuples if tup[0] != 'rbf' or
                                                                 (tup[0] == 'poly' and tup[3] == 0.0)]
         
-        # take a subset
         parameter_tuples = rnd.sample(parameter_tuples, k=int(0.01*len(parameter_tuples)))
 
 
-        # remove all unnecessary columns
         predictor_tuple = tuple()
         target_tuple = tuple()
         for frame in df_tuple:
@@ -56,7 +54,6 @@ class SVRModel:
         df_v_x = df_val.iloc[:,predictor_idx[0]:predictor_idx[1]]
         df_v_y = df_val.iloc[:,target_idx]
 
-        # 5 folds
         nums = range(5)
         train_rmsecs = []
         rmsecs = []
@@ -64,12 +61,7 @@ class SVRModel:
         svr_models = []
 
         num_iter = 0
-        # max_runs = len(params['kernel'])
-
-        # while num_iter < max_runs:
-
         parameter_dictionaries = []
-        # for kern in params['kernel']:
         m_id = 0
         for param_tup in parameter_tuples:
 
@@ -94,24 +86,16 @@ class SVRModel:
                     train_x_frame = trainers_x[0].append([trainers_x[1], trainers_x[2], trainers_x[3]], ignore_index=True)
                     train_y_frame = trainers_y[0].append([trainers_y[1], trainers_y[2], trainers_y[3]], ignore_index=True)
 
-                    # print('Training and testing selected done')
-
-                    # normalize
                     norm_train = norm.normalize(train_x_frame, [0,target_idx-1])
                     norm_test = norm.normalize(test_x_frame, [0,target_idx-1])
 
-                    # fit and predict
                     train_y_frame = train_y_frame.to_numpy()
                     train_y_frame = train_y_frame.reshape((train_y_frame.shape[0],))
                     svr_model.fit(norm_train, train_y_frame)
                     svr_pred = svr_model.predict(norm_test)
 
-                    # print('Fitting and prediction done')
-
-                    # compute rmsec
                     rmsec_val = np.sqrt(mean_squared_error(test_y_frame, svr_pred))
                     train_rmsecs.append(rmsec_val)
-                    # print('Iter ' + str(i) + ' done')
 
                 rmsec = round(np.mean(train_rmsecs), 4)
                 rmsecs.append(rmsec)
@@ -126,11 +110,9 @@ class SVRModel:
                 
                 num_iter += 1
                 t_prime = dt.now()
-                # print(str(params_dict))
                 print('Training param set ' + str(num_iter) + ' complete: ' + str(t_prime))
         
             except:
-                # print('Error found')
                 continue
         
         model_opt = ModelOptimizer()
@@ -138,7 +120,6 @@ class SVRModel:
 
         print('Train done')
 
-        # return (min_rmsec, svr_models, rmsecs, opt_params, dim_reduced_instances, parameter_dictionaries)
         return (opt_dict, opt_dict['rmsec'], svr_models, rmsecs, rmsecvs, parameter_dictionaries)
 
     def svr_test(self, test_set, predictor_idx, target_idx, svr_models, params, test_plot=False):

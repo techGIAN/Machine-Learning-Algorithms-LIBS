@@ -4,7 +4,6 @@ import numpy as np
 import argparse
 import copy
 import warnings
-warnings.filterwarnings('ignore')
 
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.svm import SVR
@@ -152,12 +151,6 @@ def get_params(filename):
 
 
 
-# def mean_center(x):
-#     means = x.mean(axis=0, skipna=True)
-#     for col in x.columns:
-#         x[col] = x[col] - means[col]
-#     return x
-
 # =============================== Main Function ===============================
 
 np.random.seed(123)
@@ -173,15 +166,9 @@ elements = {'SiO2': 1,
             'Na2O': 7,
             'K2O': 8}
 
-# models = ['pls', 'svr', 'linreg', 'ridge', 'lasso', 'enets', 'ann', 'cnn', 'xgb']
 
 directory = '../spectroscopy-preliminary-results/' + element + '/'
 
-####3 THIS IS WHERE WE STOPPED; WE NEED TO READ THE ENSEMBLE FILE
-#### AND GET WHICH MODELS WILL BE USED FOR ENSEMBLE MODEL
-#### THEN INSTANTIATE THOSE THREE MODELS WITH THEIR BEST PARAMETERS 
-#### HAVE THEM PREDICT ON THE ENSEMBLE SET THEN TAKE THE AVERAGE
-#### THEN COMPUTE THE RMSE --- THIS WILL BE THE RMSEE
 
 ens_df = pd.read_csv('../dataset/ensemble_set/ensembling.csv')
 ens_actuals = ens_df.iloc[:,elements[element] + 6144]
@@ -196,6 +183,7 @@ no_ens_predictors = no_ens_predictors.subtract(ens_predictors.mean())
 final_output = ''
 models_output = ''
 models_for_ensemble = []
+warnings.filterwarnings('ignore')
 fl = True
 with open(directory + 'ensemble_result.txt') as f:
     for line in f:
@@ -317,37 +305,3 @@ path = '../spectroscopy-preliminary-results/' + element + '/ensemble_result_upd.
 filewrite = open(path, 'w')
 filewrite.write(final_output)
 filewrite.close()
-
-
-
-# s = 'FINAL COMPARISON OF RESULTS with ENSEMBLE (' + element + ')          ' 
-# temp_s = s
-# s = '='*len(s) + '\n' + s + '\n' + '='*len(s) + '\n'
-
-# headings = ['MODEL\t', 'RMSEC', 'RMSEV', 'RMSET', 'RMSEE']
-# for h in headings:
-#     s += h + '\t'
-# s += '\n' + '-----' + '\t\t' + '-----' + '\t' + '-----' + '\t' + '-----' + '\t' + '-----' + '\n'
-
-# dict_place = {model_1: 1, model_2: 2, model_3:3 }
-# for i in range(9):
-#     if i in dict_place.keys():
-#         s += models[i] + '\t\t' + str(rmsecs[i]) + '\t' + str(rmsevs[i]) + '\t' + str(rmsets[i]) + '\t' + str(rmsees[i]) + ' (' + str(dict_place[i]) + ')' + '\n'
-#     else:
-#         s += models[i] + '\t\t' + str(rmsecs[i]) + '\t' + str(rmsevs[i]) + '\t' + str(rmsets[i]) + '\t' + str(rmsees[i]) + '\n'
-
-# s += 'ensemble' + '\t\t' + ' --' + '\t' + ' --' + '\t' + ' --' + '\t' + str(ensemble_res) + '\n'
-
-# s += '-'*len(temp_s) + '\n'
-# s += 'Models for Ensemble:' + '\n'
-# s += '\t1) ' + models[model_1] + '\n'
-# s += '\t2) ' + models[model_2] + '\n'
-# s += '\t3) ' + models[model_3] + '\n'
-
-# s += '='*len(temp_s)
-
-# f.write(s)
-
-# f.close()
-
-# print('Successful ensembling.')

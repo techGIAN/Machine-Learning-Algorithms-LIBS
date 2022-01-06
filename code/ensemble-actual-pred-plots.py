@@ -154,8 +154,6 @@ def test_plot(actual_y, predicted_y1, predicted_y2, predicted_y3, models, elemen
     '''
         Plot the Actual vs Predicted Y (only for the validation or testing plot)
     '''
-    # actual_values = [x[0] for x in actual_y.values.tolist()]
-    # predicted_values = [x[0] for x in predicted_y]
     actual_values = actual_y.tolist()
     predicted_values1 = predicted_y1.tolist()
     predicted_values2 = predicted_y2.tolist()
@@ -170,7 +168,6 @@ def test_plot(actual_y, predicted_y1, predicted_y2, predicted_y3, models, elemen
         plt.subplot(1,3,j+1)
         x_label = 'Actual ' + element
         y_label = 'Predicted ' + element
-        # title = 'Actual vs Predicted Plots for ' + models[j] + ' (' + element + ')'
 
         # Plot y = x
         x_range = np.arange(min_actual_y, max_actual_y)
@@ -186,17 +183,9 @@ def test_plot(actual_y, predicted_y1, predicted_y2, predicted_y3, models, elemen
     plt.suptitle('Actual vs Predicted Plots for ' + element)
     plt.tight_layout()
 
-    # if save_plot:
     plt.savefig(fname)
     plt.show()
 
-
-
-# def mean_center(x):
-#     means = x.mean(axis=0, skipna=True)
-#     for col in x.columns:
-#         x[col] = x[col] - means[col]
-#     return x
 
 # =============================== Main Function ===============================
 
@@ -213,7 +202,6 @@ elements = {'SiO2': 1,
             'Na2O': 7,
             'K2O': 8}
 
-# models = ['pls', 'svr', 'linreg', 'ridge', 'lasso', 'enets', 'ann', 'cnn', 'xgb']
 
 directory = '../spectroscopy-preliminary-results/' + element + '/'
 
@@ -263,7 +251,6 @@ if True:
     if 'pls' in models_for_ensemble:
         ens_preds_ave = ens_preds_ave + preds
     pls_preds = copy.deepcopy(preds)
-    # test_plot(ens_actuals, preds, 'PLS', element, '../spectroscopy-preliminary-results/' + element + '/actual-predicted-plot_pls.png')
 
 if 'svr' in models_for_ensemble:
     directory_model = directory + 'svr'
@@ -280,7 +267,6 @@ if 'linreg' in models_for_ensemble:
     param_file = [x for x in os.listdir(directory_model) if x[0] != '.' and 'params' in x][0]
     model_param_dict = get_params(directory_model + '/' + param_file)
     ens_model = lm.LinearRegression(fit_intercept=True)
-    # ens_model.set_params(fit_intercept=True)
     ens_model.fit(no_ens_predictors, no_ens_actuals)
     preds = ens_model.predict(ens_predictors).reshape((ens_actuals.shape[0],))
     ens_preds_ave = ens_preds_ave + preds
@@ -327,7 +313,6 @@ if True:
     if 'xgb' in models_for_ensemble:
         ens_preds_ave = ens_preds_ave + preds
     xgb_preds = copy.deepcopy(preds)
-    # test_plot(ens_actuals, preds, 'XGB', element, '../spectroscopy-preliminary-results/' + element + '/actual-predicted-plot_xgb.png')
 
 if 'ann' in models_for_ensemble:
     directory_model = directory + 'ann'
@@ -351,14 +336,3 @@ if 'cnn' in models_for_ensemble:
 
 ens_preds_ave = ens_preds_ave/3
 test_plot(ens_actuals, pls_preds, xgb_preds, ens_preds_ave, ['PLS', 'XGB', 'Ensemble'], element, '../spectroscopy-preliminary-results/' + element + '/actual-predicted-plot.png')
-# rmsee = round(np.sqrt(mean_squared_error(ens_actuals, ens_preds_ave)), 4)
-
-
-# sp_line = 'ensemble' + '\t\t' + ' --' + '\t' + ' --' + '\t' + ' --' + '\t' + str(rmsee) + '\n'
-# final_output = final_output + sp_line + models_output + temp_line
-
-# path = '../spectroscopy-preliminary-results/' + element + '/ensemble_result_upd.txt'
-# filewrite = open(path, 'w')
-# filewrite.write(final_output)
-# filewrite.close()
-

@@ -3,18 +3,11 @@ import numpy as np
 import random as rnd
 from datetime import datetime as dt
 from numpy.random import seed
-# import matplotlib.pyplot as plt
 from os import listdir
 from os.path import isfile, join
 import argparse
-import os
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+import ones
 
-# from DataSplitter import DataSplitter
-# from PLSModel import PLSModel
-# from SVRModel import SVRModel
-# from LRMModel import LRMModel
-# from XGBModel import XGBModel
 from models.NNModel import NNModel
 
 # =============================== Helper Functions ===============================
@@ -132,9 +125,6 @@ df_val = pd.read_csv(df_val_name)
 df_test = pd.read_csv(df_test_name)
 df_ens = pd.read_csv(df_ens_name)
 
-# overwrite = False # change if needed
-# save_plot = True
-# test_plot = False
 
 t1 = dt.now()
 print('Start runtime: ', t1)
@@ -149,52 +139,9 @@ elements = {'SiO2': 1,
             'Na2O': 7,
             'K2O': 8}
 
-# elements = {'SiO2': 1}
 
 ele = elements[E]
-# target_idx = col + ele
 
-# scaler = StandardScaler()
-
-# print(df.iloc[:,4095:4099].tail(20))
-# print(df['spectra4096'].sum())
-# for c in df.columns:
-#     if df[c].sum() == 0:
-#         print(c)
-# exit()
-
-# # row, col = df.iloc[:,1:6145].shape
-# # ====== Attribute reduction ========
-# dff = df.iloc[:,1:6145]
-# # new_data = dff.to_numpy()
-# # scaler.fit(new_data)
-# # df = scaler.transform(new_data)
-# # df = pd.DataFrame(df, columns=np.arange(1,6145))
-
-
-# corr_matrix = dff.corr()
-# upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
-# to_drop = [col for col in upper.columns if any(upper[col] > 0.85)]
-# dff.drop(to_drop, axis=1, inplace=True)
-# row, col = dff.shape
-
-# # print(dff.head())
-# # print(dff.shape)
-# # corr_matrix.to_csv('df_corr.csv',index=False)
-# # exit()
-# # sn.heatmap(corr_matrix, annot=True)
-# # plt.show()
-
-# target_idx = col + ele
-# sample_df = df.iloc[:,0]
-# labels = df.iloc[:,6145:]
-# df_copy = dff.copy(deep=True)
-# # df_copy = df.iloc[:,1:6145]
-# df = pd.concat([sample_df, df_copy, labels], axis=1)
-
-# df.to_csv('./dataset/spec_df_reduced.csv', index=False)
-
-# row, col = df.shape
 N_predictors = 6144
 target_idx = N_predictors + ele
 
@@ -254,32 +201,7 @@ if model == 'ann':
         f.write('\t' + k + ' = ' + str(v) + '\n')
     f.close()
 
-# PLOT
-# x_vals = svr_params['kernel']
-# y_rmsecs = rmsecs
-# y_rmsecvs = rmsecvs
-# x_label = 'kernel'
-# y_label = 'RMSE'
-# marker = ['-o']*4 + ['--o']*4
-# color = ['b', 'r', 'g', 'k']*2
 
-# title = 'RMSE for SVR'
-
-# x_axis = np.arange(1,len(x_vals)+1)
-
-  
-# plt.bar(x_axis - 0.2, y_rmsecs, 0.4, label = 'RMSEC')
-# plt.bar(x_axis + 0.2, y_rmsecvs, 0.4, label = 'RMSECV')
-  
-# plt.xticks(x_axis, x_vals)
-# plt.xlabel(x_label)
-# plt.ylabel(y_label)
-# plt.title(title)
-# plt.legend()
-# if save_plot:
-#     plt.savefig(get_output_file(model_name, 'png'))
-
-# plt.show()
 
 # =============================== CNN ===============================
 
@@ -336,32 +258,4 @@ elif model == 'cnn':
     for k, v in opt_dict.items():
         f.write('\t' + k + ' = ' + str(v) + '\n')
     f.close()
-
-# # PLOT
-# x_vals = svr_params['kernel']
-# y_rmsecs = rmsecs
-# y_rmsecvs = rmsecvs
-# x_label = 'kernel'
-# y_label = 'RMSE'
-# marker = ['-o']*4 + ['--o']*4
-# color = ['b', 'r', 'g', 'k']*2
-
-# title = 'RMSE for SVR'
-
-# x_axis = np.arange(1,len(x_vals)+1)
-
-  
-# plt.bar(x_axis - 0.2, y_rmsecs, 0.4, label = 'RMSEC')
-# plt.bar(x_axis + 0.2, y_rmsecvs, 0.4, label = 'RMSECV')
-  
-# plt.xticks(x_axis, x_vals)
-# plt.xlabel(x_label)
-# plt.ylabel(y_label)
-# plt.title(title)
-# plt.legend()
-# if save_plot:
-#     plt.savefig(get_output_file(model_name, 'png'))
-
-# plt.show()
-
 

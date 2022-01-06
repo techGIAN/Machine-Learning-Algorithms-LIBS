@@ -18,7 +18,6 @@ from models.LRMModel import LRMModel
 from models.XGBModel import XGBModel
 
 
-# from sklearn.preprocessing import StandardScaler
 
 
 # =============================== Helper Functions ===============================
@@ -134,16 +133,11 @@ df_val = pd.read_csv(df_val_name)
 df_test = pd.read_csv(df_test_name)
 df_ens = pd.read_csv(df_ens_name)
 
-# overwrite = False # change if needed
-# save_plot = True
-# test_plot = False
 
 t1 = dt.now()
 print('Start runtime: ', t1)
 print('Running...')
 
-# wr = 'w' if overwrite else 'a'
-# f = open(f_out, wr)
 
 elements = {'SiO2': 1,
             'TiO2': 2,
@@ -154,57 +148,11 @@ elements = {'SiO2': 1,
             'Na2O': 7,
             'K2O': 8}
 
-# elements = {'SiO2': 1}
-
 ele = elements[E]
-# target_idx = col + ele
 
-# scaler = StandardScaler()
-
-# print(df.iloc[:,4095:4099].tail(20))
-# print(df['spectra4096'].sum())
-# for c in df.columns:
-#     if df[c].sum() == 0:
-#         print(c)
-# exit()
-
-# # row, col = df.iloc[:,1:6145].shape
-# # ====== Attribute reduction ========
-# dff = df.iloc[:,1:6145]
-# # new_data = dff.to_numpy()
-# # scaler.fit(new_data)
-# # df = scaler.transform(new_data)
-# # df = pd.DataFrame(df, columns=np.arange(1,6145))
-
-
-# corr_matrix = dff.corr()
-# upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
-# to_drop = [col for col in upper.columns if any(upper[col] > 0.85)]
-# dff.drop(to_drop, axis=1, inplace=True)
-# row, col = dff.shape
-
-# # print(dff.head())
-# # print(dff.shape)
-# # corr_matrix.to_csv('df_corr.csv',index=False)
-# # exit()
-# # sn.heatmap(corr_matrix, annot=True)
-# # plt.show()
-
-# target_idx = col + ele
-# sample_df = df.iloc[:,0]
-# labels = df.iloc[:,6145:]
-# df_copy = dff.copy(deep=True)
-# # df_copy = df.iloc[:,1:6145]
-# df = pd.concat([sample_df, df_copy, labels], axis=1)
-
-# df.to_csv('./dataset/spec_df_reduced.csv', index=False)
-
-# row, col = df.shape
 N_predictors = 6144
 target_idx = N_predictors + ele
 
-# rmsec_values = []
-# rmsecv_values = []
 
 
 # =============================== PLS ===============================
@@ -263,33 +211,6 @@ if model == 'pls':
     f.close()
 
 
-
-# # PLOT
-# x_range = np.arange(pls_bounds[0], pls_bounds[1]-5)
-# y_range = rmsecs[:pls_bounds[1]-7]
-# y_range_val = rmsecvs[:pls_bounds[1]-7]
-# x_label = 'n_components'
-# y_label = 'RMSE'
-# marker = ['-o']*4 + ['--o']*4
-# color = ['b', 'r', 'g', 'k']*2
-
-# title = 'RMSE for PLS'
-
-# style = color[0] + '-'
-# style_val = color[1] + '-'
-# plt.plot(x_range, y_range, style, label=E+' RMSEC')
-# plt.plot(x_range, y_range_val, style_val, label=E+' RMSECV')
-# plt.xlabel(x_label)
-# plt.ylabel(y_label)
-# plt.legend(loc=0)
-# plt.title(title)
-
-# if save_plot:
-#     plt.savefig(get_output_file(model_name, 'png'))
-
-# plt.show()
-# exit()
-
 # =============================== SVR ===============================
 
 elif model == 'svr':
@@ -345,33 +266,6 @@ elif model == 'svr':
         f.write('\t' + k + ' = ' + str(v) + '\n')
     f.close()
 
-
-# # # PLOT
-# # x_vals = svr_params['kernel']
-# # y_rmsecs = rmsecs
-# # y_rmsecvs = rmsecvs
-# # x_label = 'kernel'
-# # y_label = 'RMSE'
-# # marker = ['-o']*4 + ['--o']*4
-# # color = ['b', 'r', 'g', 'k']*2
-
-# # title = 'RMSE for SVR'
-
-# # x_axis = np.arange(1,len(x_vals)+1)
-
-  
-# # plt.bar(x_axis - 0.2, y_rmsecs, 0.4, label = 'RMSEC')
-# # plt.bar(x_axis + 0.2, y_rmsecvs, 0.4, label = 'RMSECV')
-  
-# # plt.xticks(x_axis, x_vals)
-# # plt.xlabel(x_label)
-# # plt.ylabel(y_label)
-# # plt.title(title)
-# # plt.legend()
-# # if save_plot:
-# #     plt.savefig(get_output_file(model_name, 'png'))
-
-# # plt.show()
 
 # =============================== LRM ===============================
 
@@ -436,67 +330,6 @@ elif model in ['linreg', 'lasso', 'ridge', 'enets']:
         f.write('\t' + k + ' = ' + str(v) + '\n')
     f.close()
 
-# # # PLOT
-# # x_vals = svr_params['kernel']
-# # y_rmsecs = rmsecs
-# # y_rmsecvs = rmsecvs
-# # x_label = 'kernel'
-# # y_label = 'RMSE'
-# # marker = ['-o']*4 + ['--o']*4
-# # color = ['b', 'r', 'g', 'k']*2
-
-# # title = 'RMSE for SVR'
-
-# # x_axis = np.arange(1,len(x_vals)+1)
-
-  
-# # plt.bar(x_axis - 0.2, y_rmsecs, 0.4, label = 'RMSEC')
-# # plt.bar(x_axis + 0.2, y_rmsecvs, 0.4, label = 'RMSECV')
-  
-# # plt.xticks(x_axis, x_vals)
-# # plt.xlabel(x_label)
-# # plt.ylabel(y_label)
-# # plt.title(title)
-# # plt.legend()
-# # if save_plot:
-# #     plt.savefig(get_output_file(model_name, 'png'))
-
-# # plt.show()
-
-# # PLOT for Lasso and Ridge
-# if False and (lrm_shortnames[model_name] == 'lasso' or lrm_shortnames[model_name] == 'ridge'):
-#     x_range = alpha_list
-#     y_range = rmsecs
-#     y_range_val = rmsecvs
-#     x_label = 'alpha'
-#     y_label = 'RMSE'
-#     marker = ['-o']*4 + ['--o']*4
-#     color = ['b', 'r', 'g', 'k']*2
-
-#     title = 'RMSE for ' + model_name
-
-#     style = color[0] + '-'
-#     style_val = color[1] + '-'
-#     plt.plot(x_range, y_range, style, label=E+' RMSEC')
-#     plt.plot(x_range, y_range_val, style_val, label=E+' RMSECV')
-#     plt.xlabel(x_label)
-#     plt.ylabel(y_label)
-#     plt.legend(loc=0)
-#     plt.title(title)
-
-#     if save_plot:
-#         plot_name = get_output_file('lrm', 'png').replace('.png', '_' + lrm_shortnames[model_name] + '.png')
-#         plt.savefig(get_output_file('lrm', 'png'))
-
-#     plt.show()
-
-# pt = Plotter()
-# actual_y = partitioned_data[5].iloc[:,target_idx].tolist()
-# pred_y = lrm_pred.tolist()
-# # print(actual_y)
-# # print(pred_y)
-# pt.plot(actual_y, pred_y, model_name, E)
-
 
 
 # # =============================== XGB ===============================
@@ -552,30 +385,3 @@ elif model == 'xgb':
     for k, v in opt_dict.items():
         f.write('\t' + k + ' = ' + str(v) + '\n')
     f.close()
-
-# # # PLOT
-# # x_vals = svr_params['kernel']
-# # y_rmsecs = rmsecs
-# # y_rmsecvs = rmsecvs
-# # x_label = 'kernel'
-# # y_label = 'RMSE'
-# # marker = ['-o']*4 + ['--o']*4
-# # color = ['b', 'r', 'g', 'k']*2
-
-# # title = 'RMSE for SVR'
-
-# # x_axis = np.arange(1,len(x_vals)+1)
-
-  
-# # plt.bar(x_axis - 0.2, y_rmsecs, 0.4, label = 'RMSEC')
-# # plt.bar(x_axis + 0.2, y_rmsecvs, 0.4, label = 'RMSECV')
-  
-# # plt.xticks(x_axis, x_vals)
-# # plt.xlabel(x_label)
-# # plt.ylabel(y_label)
-# # plt.title(title)
-# # plt.legend()
-# # if save_plot:
-# #     plt.savefig(get_output_file(model_name, 'png'))
-
-# # plt.show()

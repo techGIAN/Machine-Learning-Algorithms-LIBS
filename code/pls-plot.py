@@ -59,12 +59,9 @@ for i in range(1,9):
     rng = range(2,51)
     plt.plot(rng, all_rmsecs[i-1], color='darkorange', label='RMSEC')
     plt.plot(rng, all_rmsecvs[i-1], color='purple', label='RMSECV')
-    # plt.plot([best_comps[i-1][0]], [best_comps[i-1][1]], color='r', marker='X')
     plt.axvline(x=best_comps[i-1][0], color='r', linestyle='--')
-    # plt.axhline(y=best_comps[i-1][1], color='b', linestyle='--')
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-    # plt.legend()
     plt.text(max(best_comps[i-1][0]-8,1.5), max_rmsecvs[i-1]*0.95, str(int(best_comps[i-1][0])) + ' components', fontsize = 8, 
          bbox = dict(facecolor = 'mistyrose', alpha = 0.8))
 

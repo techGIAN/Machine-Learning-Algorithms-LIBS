@@ -4,7 +4,7 @@ Machine Learning Project where we compare machine learning models' performances 
 ## Abstract
 [To be filled...]
 
-If something does not work, read the section [below](https://github.com/techGIAN/Spectroscopy/edit/main/README.md/#it-does-not-work)
+If something does not work, read the section [below](https://github.com/techGIAN/Spectroscopy#it-does-not-work)
 
 ## Basic Requirements
 Here are some basic requirements you need to have to run this:

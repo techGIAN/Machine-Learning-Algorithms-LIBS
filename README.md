@@ -92,7 +92,28 @@ And then we compile this as follows (only do this for CNN). Still in the ```code
 ```console
 user:~$ python3 compile.py --out [N] --element [E]
 ```
-where ```[E]``` is the element and ```[N]``` is the ```N``` value obtained earlier. This consolidates the CNN results into a single file, whose output is also going to be generated in the ```results/cnn/```. Note that this compilation cannot be done unless all five CNN runs are consecutively successful.
+where ```[E]``` is the element and ```[N]``` is the ```N``` value obtained earlier. This consolidates the CNN results into a single file, whose output is also going to be generated in the ```results/cnn/```. Note that this compilation cannot be done unless all five CNN runs are consecutively successful. <br>
+
+<hr>
+
+### C. Extras
+These things can only be done once all eight steps (see [Usage](https://github.com/techGIAN/Spectroscopy#usage) section). First, naviagate to ```code/```:
+```console
+user:~$ cd code
+```
+1. We can see the Actual-vs-Predicted plots of the best models and Ensemble using this command.
+```console
+user:~$ python3 ensemble-actual-pred-plots.py --element [E]
+```
+where ```[E]``` is one of the eight elements.
+
+2. We can see the plot for PLS - that determines the appropriate number of components for each of the eight elements
+```console
+user:~$ python3 pls-plot.py 
+```
+
+3. We can see the ternary plots. (TO-DO)
+4. We can see the plots of the actual raw data. (TO-DO)
 
 ## It Does Not Work...
 If it does not work, here are some options:
@@ -103,9 +124,9 @@ If it does not work, here are some options:
 
 ## Other Things To Do
 - [x] Complete the restructured model.
-- [ ] Test on SiO2 on another computer (note it has only been tested on SiO2 on my computer)
-- [ ] Test on all other 7 elements on both computers.
+- [ ] Test on another computer.
 - [ ] Plot ternary plots
+- [ ] Plot actual raw data.
 - [x] Plot actual-vs-observed
 - [x] Runtime analysis
 - [ ] Finish writing the manuscipt/changes.

@@ -110,21 +110,5 @@ where ```[E]``` is one of the eight elements.
 user:~$ python3 pls-plot.py 
 ```
 
-3. We can see the ternary plots. (TO-DO)
-4. We can see the plots of the actual raw data. (TO-DO)
-
-## It Does Not Work...
-If it does not work, here are some options:
-1. Check the filenames, spelling-wise and sensitive-case-wise.
-2. Check the directory you are working in.
-3. Check if you have all the Python packages installed.
-4. Contact me (last resort), with a detailed description of the error, and which part of the procedure above you are stuck in. I'll try my best to replicate the error and to help.
-
-## Other Things To Do
-- [x] Complete the restructured model.
-- [ ] Test on another computer.
-- [ ] Plot ternary plots
-- [ ] Plot actual raw data.
-- [x] Plot actual-vs-observed
-- [x] Runtime analysis
-- [ ] Finish writing the manuscipt/changes.
+3. ..
+4. ..

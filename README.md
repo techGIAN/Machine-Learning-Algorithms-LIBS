@@ -112,3 +112,6 @@ user:~$ python3 pls-plot.py
 
 3. ..
 4. ..
+
+
+<i> Please contact us for any bugs, thank you. </i>

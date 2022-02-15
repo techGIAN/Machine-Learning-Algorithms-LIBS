@@ -188,7 +188,7 @@ class NNModel:
                 nn_model.compile(loss='mean_squared_error', optimizer=optimizer)
 
 
-                if dim_reduce > 0 and False:
+                if dim_reduce > 0:
                     dim_reduced_instance, reduced_train = dr.dim_reduce_train(norm_train, [0, target_idx-1], kern)
                     reduced_test = dr.dim_reduce_test(norm_test, [0,target_idx-1], dim_reduced_instance)
                     norm_train = reduced_train
